@@ -1,0 +1,9 @@
+
+    user = "root"
+ 	password = "123456"
+ 	dbname = "boxapi"
+ 	host = "127.0.0.1:3306"
+ 	MaxOpen = 100
+ 	MaxIdle = 10
+ 	Enabled = true
+ 	DebugMode = true
