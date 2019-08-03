@@ -7,16 +7,18 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
-
-
-	// 处理未被捕捉的错误
-	//router.Use(nice.Recovery(recoveryHandler))
 	app := router.Group("/api/v1")
+	app.Use(JWTAuth())
 	authController := app.Group("/auth")
 	{
 		authController.POST("/add", controller.AddAuth)
-
+		authController.POST("/update", controller.UpdateAuth)
+		authController.POST("/delete", controller.DelAuth)
+		authController.GET("/list", controller.ListAuth)
 	}
 
 	return router
 }
+
+
+

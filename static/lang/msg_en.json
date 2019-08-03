@@ -1,5 +1,6 @@
 {
   "0": "success",
   "1": "system failed",
-  "1001": "params error"
+  "1001": "params error",
+  "1002": "{{.name}}还有几次{{.num}}"
 }

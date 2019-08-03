@@ -7,6 +7,8 @@ import (
 	"github.com/jinzhu/gorm"
 	"text/template"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/go-redis/redis"
+	"time"
 )
 
 type dbCfg struct {
@@ -19,10 +21,28 @@ type dbCfg struct {
 	Enabled  bool
 	DebugMode bool
 }
-var conn *gorm.DB
-func InitDB(){
-	var  dbInfo dbCfg
 
+type redisCfg struct {
+	Addr string
+	Db int
+	DialTimeout int
+	ReadTimeout int
+	WriteTimeout int
+	PoolSize int
+	PoolTimeout int
+	IdleTimeout int
+	IdleCheckFrequency int
+	PassWord string
+}
+var conn *gorm.DB
+var RedisClient *redis.Client
+func InitDB(){
+	initMysql()
+	initRedis()
+}
+
+func initMysql(){
+	var  dbInfo dbCfg
 	if _, err := toml.DecodeFile("./configs/mysql.toml", &dbInfo); err != nil {
 		panic(err)
 	}
@@ -42,7 +62,29 @@ func InitDB(){
 	} else {
 		conn = rdb
 	}
-	fmt.Println(conn)
+}
+
+func initRedis(){
+	var redisInfo redisCfg
+	if _, err := toml.DecodeFile("./configs/redis.toml", &redisInfo); err != nil {
+		panic(err)
+	}
+	RedisClient=redis.NewClient(&redis.Options{
+		Addr:               redisInfo.Addr,
+		DB:                 redisInfo.Db,
+		DialTimeout:        time.Duration(redisInfo.DialTimeout)* time.Second,
+		ReadTimeout:        time.Duration(redisInfo.ReadTimeout) * time.Second,
+		WriteTimeout:       time.Duration(redisInfo.WriteTimeout) * time.Second,
+		PoolSize:           redisInfo.PoolSize,
+		PoolTimeout:        time.Duration(redisInfo.PoolTimeout) * time.Second,
+		IdleTimeout:        time.Duration(redisInfo.IdleTimeout) * time.Millisecond,
+		IdleCheckFrequency: time.Duration(redisInfo.IdleCheckFrequency) * time.Millisecond,
+		Password:			redisInfo.PassWord,
+	})
+	_,err:=RedisClient.Ping().Result()
+	if err!=nil {
+		panic(err)
+	}
 }
 
 type BaseDao struct {

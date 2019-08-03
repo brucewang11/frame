@@ -26,12 +26,12 @@ func init (){
 	err := readFile("./static/lang/msg_ch.json",&msgCh)
 	if err !=nil {
 		log.Error("读取json错误")
-		return
+		panic(err)
 	}
 	err = readFile("./static/lang/msg_en.json",&msgEn)
 	if err !=nil {
 		log.Error("读取json错误")
-		return
+		panic(err)
 	}
 	AllMsg[headerZhLang] = msgEn
 	AllMsg[headerEnLang] = msgCh
