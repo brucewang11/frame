@@ -1,3 +1,6 @@
+
+框架集成了gorm,gin,redis,mysql等，能快速开发http接口
+
 项目结构
 ```
 ├── common                                      // 放全局变量
